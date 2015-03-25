@@ -1,0 +1,11 @@
+*.psd
+
+*.suo
+*.user
+*.ide
+*.exe
+
+/**/bin
+/**/obj
+/packages
+/.vs
