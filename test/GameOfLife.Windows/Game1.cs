@@ -73,7 +73,7 @@
                 Debug.WriteLine(string.Format("{3:N0} ({0}x{1}) cells in {2}ms", 
                     Simulation.Width, Simulation.Height, Stopwatch.ElapsedMilliseconds, Simulation.Width * Simulation.Height));
             };
-            //Timer.Start();
+            Timer.Start();
 
             var spritesheetLocation = "Content/Spritesheet.png";
             if (!File.Exists(spritesheetLocation))
@@ -119,22 +119,6 @@
 
             Simulation.Draw(GraphicsDevice, camera.View);
             userinterface.Draw(Simulation.SpriteBatch, camera.View);
-
-            //var spriteBatch = Simulation.SpriteBatch;
-
-            //spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.View);
-            
-            //spriteBatch.Draw(texture, new Rectangle(Simulation.VisualWidth + 25, 0, 300, Simulation.VisualHeight), Color.Red);
-
-            //for (int i = 0; i < 5; i++)
-            //{
-            //    spriteBatch.Draw(texture, new Rectangle(Simulation.VisualWidth + 30, 5 + (80 * i), 275, 75), Color.Green);
-            //}
-
-            //spriteBatch.Draw(texture, new Rectangle(0, Simulation.VisualHeight + 10, 300, 20), Color.Red);
-            //spriteBatch.Draw(texture, new Rectangle(Simulation.VisualWidth - 200, Simulation.VisualHeight + 10, 200, 20), Color.Red);
-
-            //spriteBatch.End();
 
             base.Draw(gameTime);
         }
