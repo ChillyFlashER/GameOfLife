@@ -6,6 +6,6 @@ before_build:
 - nuget restore GameOfLife.sln
 
 build:
-	parallel: true
+ parallel: true
 
 version: 1.0.{build}
