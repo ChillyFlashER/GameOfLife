@@ -1,0 +1,11 @@
+configuration: Release
+
+os: Visual Studio 2015 CTP
+
+before_build:
+- nuget restore GameOfLife.sln
+
+build:
+	parallel: true
+
+version: 1.0.{build}

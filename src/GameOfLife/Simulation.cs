@@ -64,10 +64,10 @@ namespace GameOfLife
         /// </summary>
         public bool SetCell(int x, int y, bool value)
         {
-            if (x < 0 || x > this.Width)
+            if (x < 0 || x >= this.Width)
                 return false;
 
-            if (y < 0 || y > this.Height)
+            if (y < 0 || y >= this.Height)
                 return false;
 
             this.Grid[x, y] = value;

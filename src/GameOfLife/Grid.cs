@@ -54,10 +54,10 @@
         /// </summary>
         public virtual T At(int x, int y)
         {
-            if (x < 0 || x > this.Width)
+            if (x < 0 || x >= this.Width)
                 throw new ArgumentOutOfRangeException("x is not in range of width.");
 
-            if (y < 0 || y > this.Height)
+            if (y < 0 || y >= this.Height)
                 throw new ArgumentOutOfRangeException("y is not in range of height.");
 
             return this.values[(y * this.Width) + x];
@@ -68,10 +68,10 @@
         /// </summary>
         public virtual void Set(int x, int y, T value)
         {
-            if (x < 0 || x > this.Width)
+            if (x < 0 || x >= this.Width)
                 throw new ArgumentOutOfRangeException("x is not in range of width.");
 
-            if (y < 0 || y > this.Height)
+            if (y < 0 || y >= this.Height)
                 throw new ArgumentOutOfRangeException("y is not in range of height.");
 
             this.values[(y * Width) + x] = value;
