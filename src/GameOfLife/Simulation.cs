@@ -14,41 +14,19 @@
     public class Simulation
     {
         /// <summary>
-        /// Gets the width of the simulation in cells.
-        /// </summary>
-        public int Width
-        {
-            get { return this.Grid.Width; }
-        }
-
-        /// <summary>
-        /// Gets the height of the simulation in cells.
-        /// </summary>
-        public int Height
-        {
-            get { return this.Grid.Height; }
-        }
-
-        /// <summary>
         /// Gets the grid that holds the simulation data.
         /// </summary>
         public Grid<bool> Grid { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Simulation"/> class. With width and height of 100.
-        /// </summary>
-        public Simulation()
-            : this(100, 100)
-        {
-
-        }
+        // The default size of Grid<T> is 100
+        private int size = 100; // TODO: Remove
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Simulation"/> class.
         /// </summary>
-        public Simulation(int width, int height)
+        public Simulation()
         {
-            this.Grid = new Grid<bool>(width, height);
+            this.Grid = new Grid<bool>();
         }
 
         /// <summary>
@@ -57,22 +35,7 @@
         public void Clear()
         {
             // TODO: If Step() is processing there might be an issue.
-            this.Grid = new Grid<bool>(this.Grid.Width, this.Grid.Height);
-        }
-
-        /// <summary>
-        /// Set cell at position.
-        /// </summary>
-        public bool SetCell(int x, int y, bool value)
-        {
-            if (x < 0 || x >= this.Width)
-                return false;
-
-            if (y < 0 || y >= this.Height)
-                return false;
-
-            this.Grid[x, y] = value;
-            return true;
+            this.Grid = new Grid<bool>();
         }
 
         /// <summary>
@@ -80,29 +43,19 @@
         /// </summary>
         public void Step()
         {
-            var newGrid = new Grid<bool>(this.Grid.Width, this.Grid.Height);
+            var newGrid = new Grid<bool>();
 
-            Parallel.For(0, this.Grid.Width, x =>
+            Parallel.For(0, size, x =>
             {
-                //Parallel.For(0, this.Grid.Height, y =>
-                for (int y = 0; y < this.Grid.Height; y++)
+                for (int y = 0; y < size; y++)
                 {
-                    var neighbours = this.Neighbours(x, y);
                     var cell = this.Grid[x, y];
-                    newGrid[x, y] = (cell.HasValue && neighbours >= 2 && neighbours <= 3) ||
-                        (!cell.HasValue && neighbours == 3);
-                }//);
+                    var cellValue = cell.HasValue ? cell.Value : false;
+                    var neighbours = this.Neighbours(x, y);
+                    newGrid[x, y] = (cellValue && neighbours >= 2 && neighbours <= 3) ||
+                        (!cellValue && neighbours == 3);
+                }
             });
-
-            //for (int x = 0; x < this.Grid.Width; x++)
-            //{
-            //    for (int y = 0; y < this.Grid.Height; y++)
-            //    {
-            //        var neighbours = this.Neighbours(x, y);
-            //        newGrid[x, y] = (this.Grid[x, y] && neighbours >= 2 && neighbours <= 3) || 
-            //            (!this.Grid[x, y] && neighbours == 3);
-            //    }
-            //}
 
             this.Grid = newGrid;
         }
@@ -112,6 +65,8 @@
         /// </summary>
         private int Neighbours(int x, int y)
         {
+            // TODO: Make this independant of Grid<T> class.
+
             int neighbours = 0;
             int x1, y1;
 
@@ -137,7 +92,8 @@
                     if (y1 >= this.Grid.Height)
                         y1 -= this.Grid.Height;
 
-                    if (this.Grid[x1, y1].HasValue)
+                    var cell = this.Grid[x1, y1];
+                    if (cell.HasValue && cell.Value)
                         neighbours++;
                 }
             }

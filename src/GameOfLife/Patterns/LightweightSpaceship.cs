@@ -29,7 +29,7 @@
                 for (int dy = 0; dy < 7; dy++)
                 {
                     bool value = pattern[dx, dy] == 1;
-                    simulation.SetCell(x + dx, y + dy, value);
+                    simulation.Grid.SetCell(x + dx, y + dy, value);
                 }
             }
         }

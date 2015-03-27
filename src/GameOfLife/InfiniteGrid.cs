@@ -19,11 +19,21 @@
         }
         private Point chunkSize;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int LoadedChunks
         {
             get { return values.Count; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        protected IEnumerable<KeyValuePair<Point, Grid<T>>> Values
+        {
+            get { return values; }
+        }
         private Dictionary<Point, Grid<T>> values;
 
         /// <summary>
@@ -71,6 +81,12 @@
             }
 
             return false;
+        }
+
+        /// <inheritdoc />
+        public bool TryGetCell(int x, int y, out T value)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

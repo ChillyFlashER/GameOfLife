@@ -63,6 +63,25 @@
         }
 
         /// <inheritdoc />
+        public bool TryGetCell(int x, int y, out T value)
+        {
+            if (x < 0 || x >= this.Width)
+            {
+                value = default(T);
+                return false;
+            }
+
+            if (y < 0 || y >= this.Height)
+            {
+                value = default(T);
+                return false;
+            }
+
+            value = this.values[(y * this.Width) + x];
+            return true;
+        }
+
+        /// <inheritdoc />
         public bool SetCell(int x, int y, T value)
         {
             if (x < 0 || x >= this.Width)

@@ -26,7 +26,7 @@
             {
                 for (int dy = 0; dy < 4; dy++)
                 {
-                    simulation.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
+                    simulation.Grid.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
                 }
             }
         }
@@ -59,7 +59,7 @@
             {
                 for (int dy = 0; dy < 5; dy++)
                 {
-                    simulation.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
+                    simulation.Grid.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
                 }
             }
         }
@@ -93,7 +93,7 @@
             {
                 for (int dy = 0; dy < 6; dy++)
                 {
-                    simulation.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
+                    simulation.Grid.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
                 }
             }
         }
@@ -126,7 +126,7 @@
             {
                 for (int dy = 0; dy < 6; dy++)
                 {
-                    simulation.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
+                    simulation.Grid.SetCell(x + dx, y + dy, pattern[dx, dy] == 1);
                 }
             }
         }

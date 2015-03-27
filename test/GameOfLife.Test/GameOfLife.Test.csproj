@@ -38,10 +38,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\DrawableInfiniteGrid.cs" />
     <Compile Include="Graphics\DrawableSimulation.cs" />
     <Compile Include="InfiniteGridTest.cs" />
     <Compile Include="Graphics\InputState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimulationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
