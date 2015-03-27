@@ -10,3 +10,6 @@
 /**/obj
 /packages
 /.vs
+
+# This is used by GameOfLife.Windows
+!SDL.dll

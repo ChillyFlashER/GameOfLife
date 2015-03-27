@@ -22,8 +22,8 @@
             var graphics = new GraphicsDeviceManager(this);
 
             graphics.SynchronizeWithVerticalRetrace = false;
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
+            //graphics.PreferredBackBufferWidth = 1280;
+            //graphics.PreferredBackBufferHeight = 720;
 
             IsMouseVisible = true;
             IsFixedTimeStep = false;
