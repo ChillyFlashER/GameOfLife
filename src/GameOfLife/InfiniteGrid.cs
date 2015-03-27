@@ -47,7 +47,15 @@
         /// <inheritdoc />
         public T? GetCell(int x, int y)
         {
-            throw new System.NotImplementedException();
+            var position = this.WorldToChunk(x, y);
+
+            var localGrid = this.GetChunk(position.Item1);
+            if (localGrid != null)
+            {
+                return localGrid.GetCell(position.Item2.X, position.Item2.Y);
+            }
+
+            return null;
         }
 
         /// <inheritdoc />
@@ -88,7 +96,7 @@
         {
             return new Tuple<Point,Point>(
                 new Point(x / chunkSize.X, y / chunkSize.Y),
-                new Point(chunkSize.X % x, chunkSize.Y % y));
+                new Point(x % chunkSize.X, y % chunkSize.Y));
         }
 
         /// <summary>

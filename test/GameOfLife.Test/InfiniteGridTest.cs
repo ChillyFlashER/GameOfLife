@@ -20,8 +20,8 @@
         public void world_to_chunk_match()
         {
             var pos = this.WorldToChunk(120, 160);
-            Assert.Equal(pos.Item1, new Point(1, 1));
-            Assert.Equal(pos.Item2, new Point(20, 60));
+            Assert.Equal(new Point(1, 1), pos.Item1);
+            Assert.Equal(new Point(20, 60), pos.Item2);
         }
     }
 }
