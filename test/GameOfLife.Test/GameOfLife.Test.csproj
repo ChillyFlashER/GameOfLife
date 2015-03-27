@@ -36,9 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Camera.cs" />
-    <Compile Include="DrawableSimulation.cs" />
-    <Compile Include="InputState.cs" />
+    <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\DrawableSimulation.cs" />
+    <Compile Include="InfiniteGridTest.cs" />
+    <Compile Include="Graphics\InputState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,7 +57,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\GameOfLife\GameOfLife.csproj">

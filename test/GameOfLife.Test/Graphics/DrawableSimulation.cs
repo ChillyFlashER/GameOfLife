@@ -114,8 +114,9 @@
             {
                 for (int y = 0; y < this.Height; y++)
                 {
-                    if (this.Grid.At(x, y))
-                    {
+                    var cell = this.Grid.GetCell(x, y);
+                    if (cell.HasValue && cell.Value)
+                    { // I really dont need to check has value
                         spriteBatch.Draw(blankTexture, new Rectangle((int)(x * VisualScale), (int)(y * VisualScale), (int)VisualScale, (int)VisualScale), Color.Black);
                     }
                 }

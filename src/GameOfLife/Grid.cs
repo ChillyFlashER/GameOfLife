@@ -6,7 +6,8 @@
     /// Generic 2D flat array.
     /// </summary>
     /// <typeparam name="T">Container Value</typeparam>
-    public class Grid<T>
+    public class Grid<T> : IGrid<T>
+        where T : struct
     {
         /// <summary>
         /// Gets the width of the array.
@@ -21,10 +22,10 @@
         /// <summary>
         /// Gets or sets value at position.
         /// </summary>
-        public T this[int x, int y]
+        public T? this[int x, int y]
         {
-            get { return this.At(x, y); }
-            set { this.Set(x, y, value); }
+            get { return this.GetCell(x, y); }
+            set { this.SetCell(x, y, value.Value); }
         }
 
         private T[] values;
@@ -49,32 +50,29 @@
             this.values = new T[this.Width * this.Height];
         }
 
-        /// <summary>
-        /// Returns value at position.
-        /// </summary>
-        public virtual T At(int x, int y)
+        /// <inheritdoc />
+        public T? GetCell(int x, int y)
         {
             if (x < 0 || x >= this.Width)
-                throw new ArgumentOutOfRangeException("x is not in range of width.");
+                return null;
 
             if (y < 0 || y >= this.Height)
-                throw new ArgumentOutOfRangeException("y is not in range of height.");
+                return null;
 
             return this.values[(y * this.Width) + x];
         }
 
-        /// <summary>
-        /// Sets value at position.
-        /// </summary>
-        public virtual void Set(int x, int y, T value)
+        /// <inheritdoc />
+        public bool SetCell(int x, int y, T value)
         {
             if (x < 0 || x >= this.Width)
-                throw new ArgumentOutOfRangeException("x is not in range of width.");
+                return false;
 
             if (y < 0 || y >= this.Height)
-                throw new ArgumentOutOfRangeException("y is not in range of height.");
+                return false;
 
             this.values[(y * Width) + x] = value;
+            return true;
         }
     }
 }

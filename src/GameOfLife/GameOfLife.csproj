@@ -35,6 +35,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Grid.cs" />
+    <Compile Include="InfiniteGrid.cs" />
+    <Compile Include="Interface.cs" />
     <Compile Include="Patterns\GliderGun.cs" />
     <Compile Include="Patterns\LightweightSpaceship.cs" />
     <Compile Include="Patterns\Pattern.cs" />

@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-namespace GameOfLife
+﻿namespace GameOfLife
 {
+    using System.Threading.Tasks;
+    
     /// <summary>
     /// Simulate Game Of Life.
     /// </summary>
@@ -87,8 +88,9 @@ namespace GameOfLife
                 for (int y = 0; y < this.Grid.Height; y++)
                 {
                     var neighbours = this.Neighbours(x, y);
-                    newGrid[x, y] = (this.Grid[x, y] && neighbours >= 2 && neighbours <= 3) ||
-                        (!this.Grid[x, y] && neighbours == 3);
+                    var cell = this.Grid[x, y];
+                    newGrid[x, y] = (cell.HasValue && neighbours >= 2 && neighbours <= 3) ||
+                        (!cell.HasValue && neighbours == 3);
                 }//);
             });
 
@@ -135,7 +137,7 @@ namespace GameOfLife
                     if (y1 >= this.Grid.Height)
                         y1 -= this.Grid.Height;
 
-                    if (this.Grid[x1, y1])
+                    if (this.Grid[x1, y1].HasValue)
                         neighbours++;
                 }
             }
