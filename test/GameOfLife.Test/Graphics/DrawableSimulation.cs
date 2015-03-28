@@ -4,9 +4,9 @@
     using Microsoft.Xna.Framework.Graphics;
     
     /// <summary>
-    /// Drawable overlay for <see cref="Simulation" />.
+    /// Drawable overlay for <see cref="LimitedSimulation" />.
     /// </summary>
-    public class DrawableSimulation : Simulation
+    public class DrawableSimulation : LimitedSimulation
     {
         /// <summary>
         /// Gets the spritebatch used to draw.

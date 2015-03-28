@@ -1,4 +1,4 @@
-# GameOfLife [![Build status](https://ci.appveyor.com/api/projects/status/mya78itqrtvbte5o?retina=true)](https://ci.appveyor.com/project/ChillyFlashER/gameoflife)
+# GameOfLife [![Build status](https://ci.appveyor.com/api/projects/status/mya78itqrtvbte5o)](https://ci.appveyor.com/project/ChillyFlashER/gameoflife)
 A portable simulation of Game Of Life
 
 ## Highlights

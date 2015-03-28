@@ -18,6 +18,6 @@
         /// <summary>
         /// 
         /// </summary>
-        public abstract void Create(Simulation simulation, int x, int y); // TODO: Add rotation
+        public abstract void Create(LimitedSimulation simulation, int x, int y); // TODO: Add rotation
     }
 }

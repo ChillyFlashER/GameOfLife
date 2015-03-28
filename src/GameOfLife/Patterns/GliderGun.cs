@@ -12,7 +12,7 @@
         public override int Height { get { return 0; } }
 
         /// <inheritdoc />
-        public override void Create(Simulation simulation, int x, int y)
+        public override void Create(LimitedSimulation simulation, int x, int y)
         {
             // TODO: Make it easier to create patterns and apply them
 

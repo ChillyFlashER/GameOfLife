@@ -12,7 +12,7 @@
         public override int Height { get { return 4; } }
 
         /// <inheritdoc />
-        public override void Create(Simulation simulation, int x, int y)
+        public override void Create(LimitedSimulation simulation, int x, int y)
         {
             var pattern = new byte[4, 4]
             {
@@ -44,7 +44,7 @@
         public override int Height { get { return 5; } }
 
         /// <inheritdoc />
-        public override void Create(Simulation simulation, int x, int y)
+        public override void Create(LimitedSimulation simulation, int x, int y)
         {
             var pattern = new byte[5, 6]
             {
@@ -77,7 +77,7 @@
         public override int Height { get { return 6; } }
 
         /// <inheritdoc />
-        public override void Create(Simulation simulation, int x, int y)
+        public override void Create(LimitedSimulation simulation, int x, int y)
         {
             var pattern = new byte[6, 6]
             {
@@ -111,7 +111,7 @@
         public override int Height { get { return 5; } }
 
         /// <inheritdoc />
-        public override void Create(Simulation simulation, int x, int y)
+        public override void Create(LimitedSimulation simulation, int x, int y)
         {
             var pattern = new byte[5, 5]
             {

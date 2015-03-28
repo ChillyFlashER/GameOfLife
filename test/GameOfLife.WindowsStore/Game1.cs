@@ -34,7 +34,7 @@
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData<Color>(new Color[] { Color.White });
 
-            Simulation = new DrawableSimulation(GraphicsDevice, 200, 100);
+            Simulation = new DrawableSimulation(GraphicsDevice);
             Simulation.VisualScale = 6;
 
 

@@ -12,7 +12,7 @@
         public override int Height { get { return 7; } }
 
         /// <inheritdoc />
-        public override void Create(Simulation simulation, int x, int y)
+        public override void Create(LimitedSimulation simulation, int x, int y)
         {
             var pattern = new byte[6,7]
             {
