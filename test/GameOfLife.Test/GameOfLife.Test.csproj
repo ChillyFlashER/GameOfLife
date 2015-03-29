@@ -43,7 +43,7 @@
     <Compile Include="InfiniteGridTest.cs" />
     <Compile Include="Graphics\InputState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulationTest.cs" />
+    <Compile Include="LimitedSimulationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

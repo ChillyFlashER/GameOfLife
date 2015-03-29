@@ -75,9 +75,6 @@
             Timer.Start();
 
             var spritesheetLocation = "Content/Spritesheet.png";
-            if (!File.Exists(spritesheetLocation))
-                MessageBox.Show(string.Format("Could not locate '{0}'.", spritesheetLocation), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
             var spritesheet = Texture2D.FromStream(GraphicsDevice, File.Open(spritesheetLocation, FileMode.Open));
             userinterface = new Userinterface(spritesheet, this);
 

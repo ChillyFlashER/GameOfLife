@@ -7,53 +7,73 @@
     /// <summary>
     /// Limitied Simulate Game Of Life.
     /// </summary>
-    public class LimitedSimulation
+    public class LimitedSimulation : Simulation
     {
+        /// <summary>
+        /// Gets the width of the simulation in cells.
+        /// </summary>
+        public int Width
+        {
+            get { return this.Grid.Width; }
+        }
+
+        /// <summary>
+        /// Gets the height of the simulation in cells.
+        /// </summary>
+        public int Height
+        {
+            get { return this.Grid.Height; }
+        }
+
         /// <summary>
         /// Gets the grid that holds the simulation data.
         /// </summary>
         public Grid<bool> Grid { get; private set; }
 
-        // The default size of Grid<T> is 100
-        private int size = 100; // TODO: Remove
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsParallel { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LimitedSimulation"/> class with width and height of 100.
+        /// </summary>
+        public LimitedSimulation()
+            : this(100, 100)
+        {
+
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LimitedSimulation"/> class.
         /// </summary>
-        public LimitedSimulation()
+        public LimitedSimulation(int width, int height)
         {
-            this.Grid = new Grid<bool>();
+            this.Grid = new Grid<bool>(width, height);
+            this.IsParallel = true;
         }
 
-        /// <summary>
-        /// Clear simulation.
-        /// </summary>
+        /// <inheritdoc />
         public void Clear()
         {
-            // TODO: If Step() is processing there might be an issue.
             this.Grid = new Grid<bool>();
         }
 
-        /// <summary>
-        /// Steps the simulation forward.
-        /// </summary>
-        public void Step()
+        /// <inheritdoc />
+        public override void Step()
         {
-            var newGrid = new Grid<bool>();
+            var newGrid = new Grid<bool>(this.Width, this.Height);
 
-            //if (IsParallel)
+            if (IsParallel)
             {
-                // TODO: Processor partition
-
-                int partitionCount = Environment.ProcessorCount;
                 var tasks = new List<Task>();
 
-                for (int i = 0; i < size; i++)
+                for (int i = 0; i < this.Grid.Width; i++)
                 {
                     tasks.Add(Task.Factory.StartNew(state => 
                     {
                         var x = (int)state;
-                        for (int y = 0; y < size; y++)
+                        for (int y = 0; y < this.Grid.Height; y++)
                         {
                             var cell = this.Grid[x, y];
                             var cellValue = cell.HasValue ? cell.Value : false;
@@ -66,20 +86,34 @@
 
                 Task.WaitAll(tasks.ToArray());
             }
-
-            //Parallel.For(0, size, x =>
-            //{
-            //    for (int y = 0; y < size; y++)
-            //    {
-            //        var cell = this.Grid[x, y];
-            //        var cellValue = cell.HasValue ? cell.Value : false;
-            //        var neighbours = this.Neighbours(x, y);
-            //        newGrid[x, y] = (cellValue && neighbours >= 2 && neighbours <= 3) ||
-            //            (!cellValue && neighbours == 3);
-            //    }
-            //});
+            else
+            {
+                for (int x = 0; x < this.Grid.Width; x++)
+                {
+                    for (int y = 0; y < this.Grid.Height; y++)
+                    {
+                        var cell = this.Grid[x, y];
+                        var cellValue = cell.HasValue ? cell.Value : false;
+                        var neighbours = this.Neighbours(x, y);
+                        newGrid[x, y] = (cellValue && neighbours >= 2 && neighbours <= 3) ||
+                            (!cellValue && neighbours == 3);
+                    }
+                }
+            }
 
             this.Grid = newGrid;
+        }
+
+        /// <inheritdoc />
+        public override void StepBack()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override async void SaveAsync(PCLStorage.IFile file)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -87,8 +121,6 @@
         /// </summary>
         private int Neighbours(int x, int y)
         {
-            // TODO: Make this independant of Grid<T> class.
-
             int neighbours = 0;
             int x1, y1;
 

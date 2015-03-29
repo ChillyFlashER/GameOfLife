@@ -2,7 +2,7 @@
 A portable simulation of Game Of Life
 
 ## Highlights
-- **Portable:** Runs on Windows, Windows Store, iOS, Android, etc.
+- **Portable:** Runs on Windows, Windows Phone 8, Windows Store, iOS, Android, etc.
 
 ## Getting Started
 
