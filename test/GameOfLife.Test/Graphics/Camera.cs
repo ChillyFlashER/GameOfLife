@@ -71,6 +71,7 @@
 
             this.MinZoom = 0.5f;
             this.MaxZoom = 1.0f;
+            this.Zoom = 1.0f;
         }
 
         /// <summary>

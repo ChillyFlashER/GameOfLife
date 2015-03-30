@@ -30,7 +30,7 @@
         /// <summary>
         /// 
         /// </summary>
-        protected IEnumerable<KeyValuePair<Point, Grid<T>>> Values
+        public IEnumerable<KeyValuePair<Point, Grid<T>>> Values
         {
             get { return values; }
         }
@@ -112,13 +112,15 @@
         {
             return new Tuple<Point,Point>(
                 new Point(x / chunkSize.X, y / chunkSize.Y),
-                new Point(x % chunkSize.X, y % chunkSize.Y));
+                new Point(
+                    ((x % chunkSize.X) + chunkSize.X) % chunkSize.X, 
+                    ((y % chunkSize.Y) + chunkSize.Y) % chunkSize.Y));
         }
 
         /// <summary>
         /// 
         /// </summary>
-        protected struct Point
+        public struct Point
         {
             /// <summary>
             /// 

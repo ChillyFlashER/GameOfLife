@@ -1,7 +1,9 @@
 ﻿namespace GameOfLife
 {
+    using PCLStorage;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -54,9 +56,9 @@
         }
 
         /// <inheritdoc />
-        public void Clear()
+        public override void Clear()
         {
-            this.Grid = new Grid<bool>();
+            this.Grid = new Grid<bool>(this.Width, this.Height);
         }
 
         /// <inheritdoc />
@@ -70,7 +72,7 @@
 
                 for (int i = 0; i < this.Grid.Width; i++)
                 {
-                    tasks.Add(Task.Factory.StartNew(state => 
+                    tasks.Add(Task.Factory.StartNew(state =>
                     {
                         var x = (int)state;
                         for (int y = 0; y < this.Grid.Height; y++)
@@ -81,7 +83,7 @@
                             newGrid[x, y] = (cellValue && neighbours >= 2 && neighbours <= 3) ||
                                 (!cellValue && neighbours == 3);
                         }
-                    }, i)); 
+                    }, i));
                 }
 
                 Task.WaitAll(tasks.ToArray());
@@ -105,15 +107,15 @@
         }
 
         /// <inheritdoc />
-        public override void StepBack()
+        protected override void Write(BinaryWriter writer)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Is this how I want to implement it?");
         }
 
         /// <inheritdoc />
-        public override async void SaveAsync(PCLStorage.IFile file)
+        protected override void Read(BinaryReader reader)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Is this how I want to implement it?");
         }
 
         /// <summary>

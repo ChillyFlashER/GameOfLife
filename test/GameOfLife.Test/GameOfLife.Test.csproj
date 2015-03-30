@@ -39,7 +39,7 @@
   <ItemGroup>
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\DrawableInfiniteGrid.cs" />
-    <Compile Include="Graphics\DrawableSimulation.cs" />
+    <Compile Include="Graphics\DrawableLimitedSimulation.cs" />
     <Compile Include="InfiniteGridTest.cs" />
     <Compile Include="Graphics\InputState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -19,6 +19,7 @@
         private SpriteBatch spriteBatch;
 
         private Texture2D blankTexture;
+        private Matrix viewMatrix;
 
         public DrawableInfiniteGrid(GraphicsDevice graphics)
         {
@@ -28,9 +29,21 @@
             this.blankTexture.SetData<Color>(new Color[] { Color.White });
         }
 
+        public bool SetCell(bool value)
+        {
+            // TODO: Negative numbers
+
+            var mousePos = Microsoft.Xna.Framework.Input.Mouse.GetState().Position.ToVector2();
+
+            var worldPos = Vector2.Transform(mousePos, Matrix.Invert(viewMatrix));
+            var localPos = (worldPos / VisualScale).ToPoint();
+
+            return this.SetCell(localPos.X, localPos.Y, value);
+        }
+
         public void Draw(GraphicsDevice graphics, Matrix? view = null)
         {
-            var viewMatrix = view ?? Matrix.Identity;
+            viewMatrix = view ?? Matrix.Identity;
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, viewMatrix);
 
@@ -44,11 +57,30 @@
 
         private void DrawChunk(Point point, Grid<bool> grid)
         {
+            float chunkX = point.X * ChunkSize.X * VisualScale;
+            float chunkY = point.Y * ChunkSize.Y * VisualScale;
+
             spriteBatch.Draw(blankTexture, new Rectangle(
-                (int)((point.X * ChunkSize.X) * VisualScale), 
-                (int)((point.Y * ChunkSize.Y) * VisualScale), 
+                (int)chunkX, (int)chunkY, 
                 (int)(ChunkSize.X * VisualScale), 
                 (int)(ChunkSize.Y * VisualScale)), Color.Green);
+
+
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                {
+                    var cell = grid.GetCell(x, y);
+                    if (cell.HasValue && cell.Value)
+                    {
+                        spriteBatch.Draw(blankTexture, new Rectangle(
+                            (int)(chunkX + (x * VisualScale)),
+                            (int)(chunkY + (y * VisualScale)), 
+                            (int)VisualScale, 
+                            (int)VisualScale), Color.Black);
+                    }
+                }
+            }
         }
     }
 }

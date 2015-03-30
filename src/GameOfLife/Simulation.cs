@@ -1,7 +1,11 @@
 ﻿namespace GameOfLife
 {
     using PCLStorage;
+    using System;
+    using System.Diagnostics;
     using System.IO;
+    using System.Runtime.Serialization;
+    using System.Threading.Tasks;
     
     /// <summary>
     /// Simulate Game Of Life.
@@ -18,17 +22,12 @@
         /// <summary>
         /// Clear simulation.
         /// </summary>
-        public abstract void Clear();                   // TODO: Make async
+        public abstract void Clear();
 
         /// <summary>
         /// Steps the simulation forwards.
         /// </summary>
-        public abstract void Step();                    // TODO: Make async
-
-        /// <summary>
-        /// Steps the simulation backwards.
-        /// </summary>
-        public abstract void StepBack();                // TODO: Make async
+        public abstract void Step();
 
         /// <summary>
         /// Save current simulation state to file path.
@@ -36,11 +35,18 @@
         public virtual async void SaveAsync(string filePath)
         {
             var rootFolder = FileSystem.Current.LocalStorage;
-            
-            var file = await rootFolder.GetFileAsync(filePath);
-            if (file == null)
+            IFile file;
+
+            var fileResult = await rootFolder.CheckExistsAsync(filePath);
+            if (fileResult == ExistenceCheckResult.FileExists)
+            {
+                file = await rootFolder.GetFileAsync(filePath);
+                Debug.WriteLine(string.Format("Simulation state file override at '{0}'.", file.Path));
+            }
+            else
             {
                 file = await rootFolder.CreateFileAsync(filePath, CreationCollisionOption.GenerateUniqueName);
+                Debug.WriteLine(string.Format("Simulation state save file created at '{0}'.", file.Path));
             }
 
             SaveAsync(file);
@@ -49,6 +55,22 @@
         /// <summary>
         /// Save current simulation state to file.
         /// </summary>
-        public abstract async void SaveAsync(IFile file);
+        public virtual async void SaveAsync(IFile file)
+        {
+            using (var stream = new BinaryWriter(await file.OpenAsync(FileAccess.ReadAndWrite)))
+            {
+                this.Write(stream);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected abstract void Write(BinaryWriter writer);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected abstract void Read(BinaryReader reader);
     }
 }
