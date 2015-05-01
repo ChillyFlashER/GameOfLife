@@ -23,7 +23,7 @@
         private Userinterface userinterface;
         private Camera camera;
         private bool dragging;
-
+          
         private Texture2D texture;
 
         public Game1()
@@ -124,97 +124,10 @@
         [STAThread]
         static void Main(string[] args)
         {
-            using (var game = new Game2())
+            using (var game = new Game1())
             {
                 game.Run();
             }
-        }
-    }
-
-    class Game2 : Game
-    {
-        public Stopwatch stopwatch;
-        public Timer timer;
-
-        private InputState inputState;
-        private Camera camera;
-
-        private DrawableInfiniteGrid grid;
-        private UnlimitedSimulation simulation;
-
-        public Game2()
-        {
-            var graphics = new GraphicsDeviceManager(this);
-
-            graphics.SynchronizeWithVerticalRetrace = false;
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
-
-            IsMouseVisible = true;
-            IsFixedTimeStep = false;
-        }
-
-        protected override void LoadContent()
-        {
-            GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap; 
-
-            inputState = new InputState();
-            camera = new Camera(GraphicsDevice);
-            camera.MinZoom = 0.2f;
-
-
-            //simulation = new DrawableUnlimitedSimulation(GraphicsDevice);
-            //simulation.VisualScale = 5;
-
-
-            grid = new DrawableInfiniteGrid(GraphicsDevice)
-            {
-                VisualScale = 5
-            };
-
-            grid.SetCell(0, 0, true);
-            grid.SetCell(220, 0, true);
-            grid.SetCell(120, 120, true);
-
-
-            timer = new Timer(100);
-            timer.Elapsed += (s, e) =>
-            {
-                stopwatch.Restart();
-                simulation.Step();
-                stopwatch.Stop();
-
-                Debug.WriteLine(string.Format("{0}ms", stopwatch.ElapsedMilliseconds), "Profile");
-            };
-            timer.Start();
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            inputState.Update();
-            camera.OnInput(inputState);
-
-            var mousePos = inputState.Mouse.Position.ToVector2();
-            var worldPos = Vector2.Transform(mousePos, Matrix.Invert(camera.View));
-
-            if (inputState.Mouse.LeftButton == ButtonState.Pressed)
-            {
-                grid.SetCell(true);
-            }
-
-            if (inputState.Mouse.RightButton == ButtonState.Pressed)
-            {
-                grid.SetCell(false);
-            }
-
-            base.Update(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(new Color(40, 40, 40));
-
-            grid.Draw(GraphicsDevice, camera.View);
         }
     }
 }

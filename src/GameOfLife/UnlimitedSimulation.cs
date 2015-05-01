@@ -1,9 +1,10 @@
 ﻿namespace GameOfLife
 {
     using System;
-    using System.Linq;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -12,17 +13,42 @@
     public class UnlimitedSimulation : Simulation
     {
         /// <summary>
-        /// Gets the grid that holds the simulation data.
+        /// Gets the chunk size.
         /// </summary>
-        public InfiniteGrid<bool> Grid { get; private set; }
+        public Point ChunkSize
+        {
+            get { return chunkSize; }
+        }
+        private Point chunkSize;
+
+        /// <summary>
+        /// Gets the chunks.
+        /// </summary>
+        public IEnumerable<KeyValuePair<Point, Grid<bool>>> Values
+        {
+            get { return values; }
+        }
+        private ImmutableDictionary<Point, Grid<bool>> values;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnlimitedSimulation"/> class.
         /// </summary>
         public UnlimitedSimulation()
+            : this(100, 100) 
         {
 
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnlimitedSimulation"/> class.
+        /// </summary>
+        public UnlimitedSimulation(int chunkSizeX, int chunkSizeY)
+        {
+            this.chunkSize = new Point(chunkSizeX, chunkSizeY);
+            this.values = ImmutableDictionary.Create<Point, Grid<bool>>();
+        }
+
+        #region Methods
 
         /// <inheritdoc />
         public override void Clear()
@@ -31,51 +57,32 @@
         }
 
         /// <inheritdoc />
-        public override void Step()
+        public async Task StepAsync()
         {
-            var newGrid = new InfiniteGrid<bool>();
-
-            // TODO: Moar Parallel!
-
             var tasks = new List<Task>();
 
-            foreach (var item in Grid.Values.ToArray())
+            foreach (var item in Values)
             {
-                var grid = item.Value;
-                for (int i = 0; i < grid.Width; i++)
+                tasks.Add(Task.Factory.StartNew(() =>
                 {
-                    tasks.Add(Task.Factory.StartNew(state =>
+                    var grid = item.Value;
+                    for (int x = 0; x < grid.Width; x++)
                     {
-                        var x = (int)state;
                         for (int y = 0; y < grid.Height; y++)
                         {
-                            var cell = this.Grid.GetCell(item.Key.X + x, item.Key.Y + y);
+                            var cell = this.GetCell(item.Key.X + x, item.Key.Y + y);
                             var cellValue = cell.HasValue ? cell.Value : false;
                             var neighbours = this.Neighbours(x, y);
                             var newValue = (cellValue && neighbours >= 2 && neighbours <= 3) ||
                                 (!cellValue && neighbours == 3);
 
-                            newGrid.SetCell(x, y, newValue);
+                            grid.SetCell(x, y, newValue);
                         }
-                    }, i));
-                }
+                    }
+                }));
             }
 
             Task.WaitAll(tasks.ToArray());
-
-            this.Grid = newGrid;
-        }
-
-        /// <inheritdoc />
-        protected override void Write(BinaryWriter writer)
-        {
-            throw new NotImplementedException("Is this how I want to implement it?");
-        }
-
-        /// <inheritdoc />
-        protected override void Read(BinaryReader reader)
-        {
-            throw new NotImplementedException("Is this how I want to implement it?");
         }
 
         private int Neighbours(int x, int y)
@@ -93,13 +100,109 @@
                     x1 = x + dx;
                     y1 = y + dy;
 
-                    var cell = this.Grid.GetCell(x1, y1);
+                    var cell = this.GetCell(x1, y1);
                     if (cell.HasValue && cell.Value)
                         neighbours++;
                 }
             }
 
             return neighbours;
+        }
+
+        #endregion
+
+        #region Grid Methods
+
+        public bool? GetCell(int x, int y)
+        {
+            var position = this.WorldToChunk(x, y);
+
+            var localGrid = this.GetChunk(position.Item1);
+            if (localGrid != null)
+            {
+                return localGrid.GetCell(position.Item2.X, position.Item2.Y);
+            }
+
+            return null;
+        }
+
+        public bool SetCell(int x, int y, bool value)
+        {
+            var position = this.WorldToChunk(x, y);
+
+            var localGrid = this.GetChunk(position.Item1);
+            if (localGrid != null)
+            {
+                localGrid.SetCell(position.Item2.X, position.Item2.Y, value);
+                OnChunkChanged(position.Item1);
+                
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected Grid<bool> GetChunk(Point point)
+        {
+            Grid<bool> localGrid;
+            if (!values.TryGetValue(point, out localGrid))
+            {
+                values = values.Add(point, localGrid = new Grid<bool>(chunkSize.X, chunkSize.Y));
+            }
+
+            return localGrid;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected Tuple<Point, Point> WorldToChunk(int x, int y)
+        {
+            return new Tuple<Point, Point>(
+                new Point(x / chunkSize.X, y / chunkSize.Y),
+                new Point(
+                    ((x % chunkSize.X) + chunkSize.X) % chunkSize.X,
+                    ((y % chunkSize.Y) + chunkSize.Y) % chunkSize.Y));
+        }
+
+        #endregion
+
+        protected virtual void OnChunkChanged(Point chunkPositon)
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public struct Point
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public int X;
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public int Y;
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public Point(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
+
+            public override string ToString()
+            {
+                return string.Format("[{0}, {1}]", this.X, this.Y);
+            }
         }
     }
 }

@@ -37,6 +37,7 @@
         /// Initializes a new instance of the <see cref="DrawableSimulation"/> class.
         /// </summary>
         public DrawableSimulation(GraphicsDevice graphics)
+            : base()
         {
             this.spriteBatch = new SpriteBatch(graphics);
 

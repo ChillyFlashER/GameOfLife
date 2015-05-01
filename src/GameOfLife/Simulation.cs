@@ -22,12 +22,12 @@
         /// <summary>
         /// Clear simulation.
         /// </summary>
-        public abstract void Clear();
+        public virtual void Clear() { }
 
         /// <summary>
         /// Steps the simulation forwards.
         /// </summary>
-        public abstract void Step();
+        public virtual void Step() { }
 
         /// <summary>
         /// Save current simulation state to file path.
@@ -66,11 +66,11 @@
         /// <summary>
         /// 
         /// </summary>
-        protected abstract void Write(BinaryWriter writer);
+        protected virtual void Write(BinaryWriter writer) { }
 
         /// <summary>
         /// 
         /// </summary>
-        protected abstract void Read(BinaryReader reader);
+        protected virtual void Read(BinaryReader reader) { }
     }
 }

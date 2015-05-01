@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     
     /// <summary>
     /// 
@@ -13,7 +14,7 @@
         /// <summary>
         /// 
         /// </summary>
-        protected Point ChunkSize
+        public Point ChunkSize
         {
             get { return chunkSize; }
         }
@@ -34,7 +35,7 @@
         {
             get { return values; }
         }
-        private Dictionary<Point, Grid<T>> values;
+        private ImmutableDictionary<Point, Grid<T>> values;
 
         /// <summary>
         /// 
@@ -51,7 +52,7 @@
         public InfiniteGrid(int chunkSizeX, int chunkSizeY)
         {
             this.chunkSize = new Point(chunkSizeX, chunkSizeY);
-            this.values = new Dictionary<Point, Grid<T>>();
+            this.values = ImmutableDictionary.Create<Point, Grid<T>>();
         }
 
         /// <inheritdoc />
@@ -95,14 +96,12 @@
         protected Grid<T> GetChunk(Point point)
         {
             Grid<T> localGrid;
-            if (values.TryGetValue(point, out localGrid))
+            if (!values.TryGetValue(point, out localGrid))
             {
-                return localGrid;
+                values = values.Add(point, localGrid = new Grid<T>(chunkSize.X, chunkSize.Y));
             }
-            else
-            {
-                return values[point] = new Grid<T>(chunkSize.X, chunkSize.Y);
-            }
+            
+            return localGrid;
         }
 
         /// <summary>

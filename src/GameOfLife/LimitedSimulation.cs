@@ -106,18 +106,6 @@
             this.Grid = newGrid;
         }
 
-        /// <inheritdoc />
-        protected override void Write(BinaryWriter writer)
-        {
-            throw new NotImplementedException("Is this how I want to implement it?");
-        }
-
-        /// <inheritdoc />
-        protected override void Read(BinaryReader reader)
-        {
-            throw new NotImplementedException("Is this how I want to implement it?");
-        }
-
         /// <summary>
         /// Returns all the neighbours of a point.
         /// </summary>

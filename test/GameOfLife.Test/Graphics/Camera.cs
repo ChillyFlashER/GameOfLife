@@ -29,6 +29,16 @@
         private Vector2 position;
 
         /// <summary>
+        /// Gets or sets the camera speed.
+        /// </summary>
+        public float Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
+        private float speed = 1;
+
+        /// <summary>
         /// Gets or sets the camera zoom.
         /// </summary>
         public float Zoom
@@ -87,8 +97,9 @@
         /// <summary>
         /// 
         /// </summary>
-        public void OnInput(InputState inputState)
+        public void OnInput(float elapsedTime, InputState inputState)
         {
+            var speed = Speed;
             var move = Vector2.Zero;
 
             if (inputState.IsKeyDown(Keys.W)) move.Y--;
@@ -96,14 +107,16 @@
             if (inputState.IsKeyDown(Keys.A)) move.X--;
             if (inputState.IsKeyDown(Keys.D)) move.X++;
 
+            if (inputState.IsKeyDown(Keys.LeftShift)) speed /= 2;
+
             if (move != Vector2.Zero)
             {
-                this.Position += move;
+                this.Position += move * speed * elapsedTime;
             }
 
             if (inputState.ScrollWheelChanged)
             {
-                Zoom += inputState.ScrollWheelDelta * 0.001f;
+                Zoom += inputState.ScrollWheelDelta * 0.001f * elapsedTime;
                 Zoom = MathHelper.Clamp(Zoom, MinZoom, MaxZoom);
             }
         }
