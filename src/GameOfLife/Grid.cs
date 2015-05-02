@@ -51,14 +51,8 @@
         }
 
         /// <inheritdoc />
-        public T? GetCell(int x, int y)
+        public T GetCell(int x, int y)
         {
-            if (x < 0 || x >= this.Width)
-                return null;
-
-            if (y < 0 || y >= this.Height)
-                return null;
-
             return this.values[(y * this.Width) + x];
         }
 
@@ -82,16 +76,9 @@
         }
 
         /// <inheritdoc />
-        public bool SetCell(int x, int y, T value)
+        public void SetCell(int x, int y, T value)
         {
-            if (x < 0 || x >= this.Width)
-                return false;
-
-            if (y < 0 || y >= this.Height)
-                return false;
-
             this.values[(y * Width) + x] = value;
-            return true;
         }
     }
 }

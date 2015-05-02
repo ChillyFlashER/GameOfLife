@@ -10,7 +10,7 @@
         /// Gets cell at position.
         /// </summary>
         /// <returns></returns>
-        T? GetCell(int x, int y); // TODO: Remove Nullable
+        T GetCell(int x, int y);
 
         /// <summary>
         /// Try get cell at position.
@@ -21,8 +21,7 @@
         /// <summary>
         /// Sets cell at position.
         /// </summary>
-        /// <returns></returns>
-        bool SetCell(int x, int y, T value);
+        void SetCell(int x, int y, T value);
     }
 
     /// <summary>

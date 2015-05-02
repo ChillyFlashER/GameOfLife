@@ -10,6 +10,7 @@
     /// <summary>
     /// Simulate Game Of Life.
     /// </summary>
+    [Obsolete]
     public class UnlimitedSimulation : Simulation
     {
         /// <summary>

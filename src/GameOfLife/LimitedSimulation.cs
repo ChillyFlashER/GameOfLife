@@ -1,9 +1,7 @@
 ﻿namespace GameOfLife
 {
-    using PCLStorage;
-    using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -33,9 +31,11 @@
         public Grid<bool> Grid { get; private set; }
 
         /// <summary>
-        /// 
+        /// Gets or sets simulation should be done in parallel.
         /// </summary>
         public bool IsParallel { get; set; }
+
+        private CancellationTokenSource taskCancelToken;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LimitedSimulation"/> class with width and height of 100.
@@ -58,23 +58,55 @@
         /// <inheritdoc />
         public override void Clear()
         {
+            if (taskCancelToken != null)
+            {
+                taskCancelToken.Cancel();
+            }
+
             this.Grid = new Grid<bool>(this.Width, this.Height);
         }
 
         /// <inheritdoc />
         public override void Step()
         {
-            var newGrid = new Grid<bool>(this.Width, this.Height);
-
-            if (IsParallel)
+            if (taskCancelToken != null)
             {
-                var tasks = new List<Task>();
+                // TODO: Throw exeption?
+                return; 
+            }
 
-                for (int i = 0; i < this.Grid.Width; i++)
+            taskCancelToken = new CancellationTokenSource();
+
+            Task<Grid<bool>>.Factory.StartNew(e =>
+            {
+                var newGrid = new Grid<bool>(this.Width, this.Height);
+
+                if (IsParallel)
                 {
-                    tasks.Add(Task.Factory.StartNew(state =>
+                    var tasks = new List<Task>();
+
+                    for (int i = 0; i < this.Grid.Width; i++)
                     {
-                        var x = (int)state;
+                        tasks.Add(Task.Factory.StartNew(state =>
+                        {
+                            var x = (int)state;
+                            for (int y = 0; y < this.Grid.Height; y++)
+                            {
+                                var cell = this.Grid[x, y];
+                                var cellValue = cell.HasValue ? cell.Value : false;
+                                var neighbours = this.Neighbours(x, y);
+                                newGrid[x, y] = (cellValue && neighbours >= 2 && neighbours <= 3) ||
+                                    (!cellValue && neighbours == 3);
+                            }
+                        }, i));
+                    }
+
+                    Task.WaitAll(tasks.ToArray());
+                }
+                else
+                {
+                    for (int x = 0; x < this.Grid.Width; x++)
+                    {
                         for (int y = 0; y < this.Grid.Height; y++)
                         {
                             var cell = this.Grid[x, y];
@@ -83,27 +115,21 @@
                             newGrid[x, y] = (cellValue && neighbours >= 2 && neighbours <= 3) ||
                                 (!cellValue && neighbours == 3);
                         }
-                    }, i));
-                }
-
-                Task.WaitAll(tasks.ToArray());
-            }
-            else
-            {
-                for (int x = 0; x < this.Grid.Width; x++)
-                {
-                    for (int y = 0; y < this.Grid.Height; y++)
-                    {
-                        var cell = this.Grid[x, y];
-                        var cellValue = cell.HasValue ? cell.Value : false;
-                        var neighbours = this.Neighbours(x, y);
-                        newGrid[x, y] = (cellValue && neighbours >= 2 && neighbours <= 3) ||
-                            (!cellValue && neighbours == 3);
                     }
                 }
-            }
 
-            this.Grid = newGrid;
+                return newGrid;
+
+            }, taskCancelToken).ContinueWith(r => 
+            {
+                if (r.IsCompleted)
+                {
+                    this.Grid = r.Result;
+                }
+            }).Wait();
+
+            taskCancelToken.Dispose();
+            taskCancelToken = null;
         }
 
         /// <summary>

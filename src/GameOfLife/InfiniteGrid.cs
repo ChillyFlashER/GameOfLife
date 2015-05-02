@@ -56,7 +56,7 @@
         }
 
         /// <inheritdoc />
-        public T? GetCell(int x, int y)
+        public T GetCell(int x, int y)
         {
             var position = this.WorldToChunk(x, y);
 
@@ -66,11 +66,11 @@
                 return localGrid.GetCell(position.Item2.X, position.Item2.Y);
             }
 
-            return null;
+            throw new ArgumentOutOfRangeException();
         }
 
         /// <inheritdoc />
-        public bool SetCell(int x, int y, T value)
+        public void SetCell(int x, int y, T value)
         {
             var position = this.WorldToChunk(x, y);
 
@@ -78,10 +78,7 @@
             if (localGrid != null)
             {
                 localGrid.SetCell(position.Item2.X, position.Item2.Y, value);
-                return true;
             }
-
-            return false;
         }
 
         /// <inheritdoc />
