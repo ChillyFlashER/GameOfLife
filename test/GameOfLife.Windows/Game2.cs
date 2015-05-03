@@ -58,8 +58,10 @@
 
 	public class Game2 : Game
 	{
-		const float size = 5; // 1;
-		const int width = 124; // 744;
+		/// <summary> Cell size in pixels </summary>
+		const float cell_size = 5;
+		/// <summary> Simulation width </summary>
+		const int width = 124;
 
 		private MultiCellEffect effect;
 		private Buffer contantBuffer;
@@ -84,6 +86,7 @@
 			this.simulation = new LimitedSimulation(width, width);
 			this.stopwatch = new Stopwatch();
 
+			// Create a random grid
 			var rd = new Random();
 			for (int x = 0; x < width; x++)
 			{
@@ -97,15 +100,15 @@
 				}
 			}
 
+			// Create graphcis partition (grid to graphics)
 			this.partition = new Partition(Device, width * width);
-			GenerateNewGrid();
+			UpdateSimulationGraphics();
 
 			// TODO: Matrix
 			contantBuffer = new Buffer(Device, Utilities.SizeOf<Vector4>(), ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
 			Form.MouseDown += Form_MouseDown;
 			Form.MouseMove += Form_MouseMove;
-
 			Form.KeyDown += Form_KeyDown;
 		}
 
@@ -119,11 +122,11 @@
 
 				Debug.WriteLine(string.Format("Simulation: {0} ms, {1} ticks", stopwatch.ElapsedMilliseconds, stopwatch.ElapsedTicks));
 
-				GenerateNewGrid();
+				UpdateSimulationGraphics();
 			}
 		}
 
-		void GenerateNewGrid()
+		void UpdateSimulationGraphics()
 		{
 			rlist.Clear();
 
@@ -134,8 +137,8 @@
 					if (simulation.Grid.GetCell(x, y))
 					{
 						var rect = new RectVertex();
-						rect.pos = new Vector4(ConvertPixelToClip(new Vector2(size * x, size * y)), 0.0f, 1.0f);
-						rect.siz = ConvertPixelToClip(new Vector2(size, size));
+						rect.pos = new Vector4(ConvertPixelToClip(new Vector2(cell_size * x, cell_size * y)), 0.0f, 1.0f);
+						rect.siz = ConvertPixelToClip(new Vector2(cell_size, cell_size));
 						rect.col = new Vector4(0, 0, 0, 1);
 						rlist.Add(rect);
 					}
@@ -144,8 +147,6 @@
 
 			partition.SetData(rlist.ToArray());
 		}
-
-		#region Move Camera
 
 		void Form_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -156,36 +157,40 @@
 				startPosition.X = position.X;
 				startPosition.Y = position.Y;
 			}
+			else if (e.Button == MouseButtons.Left)
+			{
+				// TODO: Mouse raycast
+			}
 		}
 
 		void Form_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right)
 			{
-				position = new Vector2(startPosition.X - -(e.X - startMouse.X) * pixelSize.X,
-									   startPosition.Y + -(e.Y - startMouse.Y) * pixelSize.Y);
+				position = new Vector2(startPosition.X + (e.X - startMouse.X) * pixelSize.X,
+									   startPosition.Y - (e.Y - startMouse.Y) * pixelSize.Y);
 			}
 		}
 
-		#endregion
-
 		protected override void Draw(DeviceContext context, float elapsedTime)
 		{
-			context.InputAssembler.InputLayout = this.effect.Layout;
-			context.InputAssembler.PrimitiveTopology = PrimitiveTopology.PointList;
+			context.InputAssembler.PrimitiveTopology = PrimitiveTopology.PointList; // TODO: I should move this to the effect too \?
 			context.VertexShader.SetConstantBuffer(0, contantBuffer);
-			context.VertexShader.Set(this.effect.VertexShader);
 			context.Rasterizer.SetViewport(0, 0, Form.ClientSize.Width, Form.ClientSize.Height);
-			context.GeometryShader.Set(this.effect.GeometryShader);
-			context.PixelShader.Set(this.effect.PixelShader);
 			context.OutputMerger.SetTargets(DepthStencilView, RenderTargetView);
 
+			// Apply effect
+			this.effect.Apply(context);
+
+			// Clear screen
 			context.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth, 1.0f, 0);
 			context.ClearRenderTargetView(RenderTargetView, Color.CornflowerBlue);
 
+			// Set camera position
 			Vector4 pos = new Vector4(position, 0, 0);
 			context.UpdateSubresource(ref pos, contantBuffer);
 
+			// Draw grid
 			this.partition.Draw(context);
 		}
 

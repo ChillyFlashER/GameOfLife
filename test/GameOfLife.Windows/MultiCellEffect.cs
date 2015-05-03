@@ -5,25 +5,28 @@
 	using SharpDX.Direct3D11;
 	using SharpDX.DXGI;
 
+	/// <summary>
+	/// Vertex data.
+	/// </summary>
 	public struct RectVertex
 	{
 		public Vector4 pos;
-		public Vector2 siz; // TODO: I could remove the size 
+		public Vector2 siz; // TODO: I could remove size and place it in the constant buffer
 		public Vector4 col;
 	}
 
 	public sealed class MultiCellEffect
 	{
-		/// <summary> </summary>
+		/// <summary> Gets the shader layout. </summary>
 		public InputLayout Layout { get; private set; }
 
-		/// <summary> </summary>
+		/// <summary> Gets the vertex shader. </summary>
 		public VertexShader VertexShader { get; private set; }
 
-		/// <summary> </summary>
+		/// <summary> Gets the geometry shader </summary>
 		public GeometryShader GeometryShader { get; private set; }
 
-		/// <summary> </summary>
+		/// <summary> Gets the pixel shader. </summary>
 		public PixelShader PixelShader { get; private set; }
 
 		public MultiCellEffect(SharpDX.Direct3D11.Device device)
@@ -47,6 +50,15 @@
 			bytecode = CustomEffect.PixelShaderByteCode;
 			this.PixelShader = new PixelShader(device, bytecode);
 		}
-	}
 
+		public void Apply(DeviceContext context)
+		{
+			// TODO: I should apply the constant buffer here too
+
+			context.InputAssembler.InputLayout = this.Layout;
+			context.VertexShader.Set(this.VertexShader);
+			context.GeometryShader.Set(this.GeometryShader);
+			context.PixelShader.Set(this.PixelShader);
+		}
+	}
 }

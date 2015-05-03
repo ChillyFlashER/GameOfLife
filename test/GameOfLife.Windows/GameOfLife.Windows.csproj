@@ -94,8 +94,6 @@
     </Compile>
     <Compile Include="Game.cs" />
     <Compile Include="Game2.cs" />
-    <Compile Include="GameTest.cs" />
-    <Compile Include="Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MultiCellEffect.cs" />
   </ItemGroup>
@@ -119,7 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MultiCell.fx" />
-    <None Include="MultiCube.fx" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
